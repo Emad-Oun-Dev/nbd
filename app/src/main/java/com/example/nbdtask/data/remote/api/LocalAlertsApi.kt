@@ -15,6 +15,5 @@ import retrofit2.http.Headers
 interface LocalAlertsApi {
     @Headers ("Content-Type: text/xml")
     @GET(LOCAL_ALERTS)
-    suspend fun getLocalAlerts():
-            Response<LocalAlertList>
+    suspend fun getLocalAlerts(): Response<LocalAlertList>
 }
