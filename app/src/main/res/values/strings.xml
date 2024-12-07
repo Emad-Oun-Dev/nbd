@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">NBDTask</string>
+
+    <string name="add">Add</string>
+    <string name="done">Done</string>
+    <string name="add_new_user_successfully">User added successfully</string>
+    <string name="removed_user_successfully">User removed successfully</string>
+    <string name="delete_user">Are you want to delete user ?</string>
+    <string name="yes">Yes</string>
+    <string name="name_txt">Name: </string>
+    <string name="email_txt">Email: </string>
+    <string name="try_again_txt">Try again </string>
+    <string name="name_error_txt">Please enter your name</string>
+    <string name="email_error_txt">Please enter valid email</string>
+
+    <string name="channel_name">reminder_channel</string>
+    <string name="channel_description">reminder_reminder</string>
+    <string name="alert_details">Alert Details Screen</string>
+    <string name="cancel_notification">Cancel Notification</string>
+</resources>
