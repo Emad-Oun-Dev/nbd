@@ -1,17 +1,13 @@
 package com.example.nbdtask.data.di
 
 //import androidx.work.WorkManager
-import android.content.Context
-import androidx.work.WorkerParameters
 import com.example.nbdtask.data.remote.api.LocalAlertsApi
 import com.example.nbdtask.data.repository.LocalAlertsRepositoryImpl
 import com.example.nbdtask.domain.repository.LocalAlertsRepository
-import com.example.nbdtask.presentation.features.localAlerts.ReminderWorker
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton

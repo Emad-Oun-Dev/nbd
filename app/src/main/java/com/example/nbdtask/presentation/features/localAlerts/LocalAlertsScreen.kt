@@ -5,7 +5,9 @@
 package com.example.nbdtask.presentation.features.localAlerts
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -43,9 +45,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.work.WorkManager
+import com.example.nbdtask.MainActivity
 import com.example.nbdtask.R
 import com.example.nbdtask.core.base.SIDE_EFFECTS_KEY
+import com.example.nbdtask.presentation.features.ReminderWorker
 import com.example.nbdtask.utils.common.Progress
+import com.example.nbdtask.utils.common.ToolBar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -55,6 +63,7 @@ import kotlinx.coroutines.flow.onEach
  * Speedi
  * emad.3oon@gmail.com
  */
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LocalAlertsScreen(
@@ -66,6 +75,7 @@ fun LocalAlertsScreen(
 
     val context = LocalContext.current
     val showReloadButton = remember { mutableStateOf(false) }
+    val showCancelAllButton = remember { mutableStateOf(true) }
 
     LaunchedEffect(SIDE_EFFECTS_KEY) {
         effectFlow?.onEach { effect ->
@@ -87,6 +97,10 @@ fun LocalAlertsScreen(
         }?.collect()
     }
 
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        onEventSent.invoke(LocalAlertsEvent.ReCallApi)
+    }
+
     when {
         state.isLoading -> {
             Progress()
@@ -95,64 +109,98 @@ fun LocalAlertsScreen(
         else -> {}
     }
 
-    Scaffold {
-        if (showReloadButton.value){
-            Column(
-                modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
+    Scaffold(
+        topBar = {
+            val activity: MainActivity = LocalContext.current as MainActivity
+            ToolBar(
+                cancelAll = showCancelAllButton,
+                titleStringId = R.string.wave_line_test_txt,
+                onBackPressed = {
+                    activity.finish()
+                },
+                onCancelAllNotification = {
+                    WorkManager.getInstance(context).cancelAllWork()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.worker_canceled_successfully),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }, onCancelNotification = {} )
+        }
+    ) {
+        Column(Modifier.padding(it)) {
+            if (showReloadButton.value) {
+                Column(
                     modifier = Modifier
-                        .wrapContentWidth()
-                        .height(50.dp)
-                        .padding(horizontal = 50.dp),
-                    onClick = { onEventSent(LocalAlertsEvent.GetAllLocalAlerts) },
-                    shape = RoundedCornerShape(25),
-                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.black))
-                )   {
-                    Text(
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        text = stringResource(R.string.try_again_txt).uppercase()
-                    )
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .height(50.dp)
+                            .padding(horizontal = 50.dp),
+                        onClick = { onEventSent(LocalAlertsEvent.GetAllLocalAlerts) },
+                        shape = RoundedCornerShape(25),
+                        colors = ButtonDefaults.buttonColors(colorResource(id = R.color.black))
+                    ) {
+                        Text(
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            text = stringResource(R.string.try_again_txt).uppercase()
+                        )
+                    }
                 }
-            }
-        } else {
-            LazyColumn(
-                state = rememberLazyListState(), modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-            ) {
-                items(state.localAlertsList) { item ->
-                    AnimatedVisibility(state.localAlertsList.isNotEmpty()) {
-                        Column(modifier = Modifier.animateContentSize { _, _ -> }) {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
-                                    .combinedClickable(
-                                        onClick = {
-                                            onEventSent(LocalAlertsEvent.OpenDetailsScreen(item.timeInSeconds?:0L))
-                                        },
-                                    ),
-                                shape = CardDefaults.shape,
-                                elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-                                colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
-                            ) {
-
-                                Column(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
-                                    Text(
-                                        modifier = Modifier
-                                            .padding(5.dp),
-                                        text = stringResource(id = R.string.name_txt).plus(" ")
-                                            .plus(item.title ?: ""),
-                                        fontSize = 16.sp,
-                                        color = colorResource(id = R.color.black),
-                                        fontWeight = FontWeight.Normal
+            } else {
+                LazyColumn(
+                    state = rememberLazyListState(), modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                ) {
+                    items(state.localAlertsList) { item ->
+                        AnimatedVisibility(state.localAlertsList.isNotEmpty()) {
+                            Column(modifier = Modifier.animateContentSize { _, _ -> }) {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                        .combinedClickable(
+                                            onClick = {
+                                                onEventSent(
+                                                    LocalAlertsEvent.OpenDetailsScreen(
+                                                        item.timeInSeconds ?: 0L
+                                                    )
+                                                )
+                                            },
+                                        ),
+                                    shape = CardDefaults.shape,
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = colorResource(
+                                            id = R.color.white
+                                        )
                                     )
-                                }
+                                ) {
 
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(20.dp)
+                                    ) {
+                                        Text(
+                                            modifier = Modifier
+                                                .padding(5.dp),
+                                            text = stringResource(id = R.string.name_txt).plus(" ")
+                                                .plus(item.title ?: ""),
+                                            fontSize = 16.sp,
+                                            color = colorResource(id = R.color.black),
+                                            fontWeight = FontWeight.Normal
+                                        )
+                                    }
+
+                                }
                             }
                         }
                     }
@@ -161,9 +209,9 @@ fun LocalAlertsScreen(
         }
     }
 
-
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(showBackground = true)
 @Composable
 fun UsersScreenPreview() {

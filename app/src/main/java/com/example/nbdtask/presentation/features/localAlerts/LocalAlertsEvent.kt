@@ -10,6 +10,7 @@ import com.example.nbdtask.core.base.ViewEvent
  */
 sealed class LocalAlertsEvent : ViewEvent {
     object GetAllLocalAlerts : LocalAlertsEvent()
+    object ReCallApi : LocalAlertsEvent()
     data class OpenDetailsScreen(val time: Long) : LocalAlertsEvent()
 
 }

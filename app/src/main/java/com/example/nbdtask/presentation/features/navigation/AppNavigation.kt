@@ -36,7 +36,7 @@ fun AppNavigation() {
                 type = NavType.LongType
             })
         ){
-            LocalAlertDetailsScreenDestination()
+            LocalAlertDetailsScreenDestination(navController = navController)
         }
 
     }

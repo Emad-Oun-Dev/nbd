@@ -69,6 +69,10 @@ class LocalAlertsViewModel @Inject constructor(
             is LocalAlertsEvent.OpenDetailsScreen -> {
                 setEffect { LocalAlertsSideEffects.Navigation.OpenDetailsScreen(event.time) }
             }
+
+            is LocalAlertsEvent.ReCallApi -> {
+                getLocalAlerts()
+            }
         }
     }
 }

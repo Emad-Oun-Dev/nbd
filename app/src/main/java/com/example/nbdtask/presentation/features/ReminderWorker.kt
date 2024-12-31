@@ -1,4 +1,4 @@
-package com.example.nbdtask.presentation.features.localAlerts
+package com.example.nbdtask.presentation.features
 
 import android.Manifest
 import android.app.Notification
@@ -15,11 +15,14 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.nbdtask.MainActivity
 import com.example.nbdtask.R
-import com.example.nbdtask.utils.TIME_KEY
+import com.example.nbdtask.utils.WORKER_NAME
 import timber.log.Timber
+import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -33,7 +36,7 @@ class ReminderWorker @Inject constructor(
     override suspend fun doWork(): Result {
         Timber.d("ReminderWorker== do work done!")
 
-       // val timeValue = inputData.getLong(TIME_KEY, 0)
+//        val timeValue = inputData.getLong(TIME_KEY, 0)
         if (ActivityCompat.checkSelfPermission(
                 appContext,
                 Manifest.permission.POST_NOTIFICATIONS)
@@ -61,11 +64,7 @@ class ReminderWorker @Inject constructor(
             MainActivity::class.java)
 
         var pendingIntentFlag by Delegates.notNull<Int>()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE
-        } else {
-            pendingIntentFlag = PendingIntent.FLAG_UPDATE_CURRENT
-        }
+        pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE
 
         val mainActivityPendingIntent = PendingIntent.getActivity(
             applicationContext,
@@ -105,6 +104,29 @@ class ReminderWorker @Inject constructor(
             notificationManager?.createNotificationChannel(
                 notificationChannel
             )
+        }
+    }
+
+
+    companion object {
+        fun isWorkScheduled(context: Context, time: Long): Boolean {
+            val instance = WorkManager.getInstance(context)
+            val statuses = instance.getWorkInfosForUniqueWork("$WORKER_NAME$time")
+            return try {
+                var running = false
+                val workInfoList = statuses.get()
+                for (workInfo in workInfoList) {
+                    val state = workInfo.state
+                    running = (state == WorkInfo.State.RUNNING) or (state == WorkInfo.State.ENQUEUED)
+                }
+                running
+            } catch (e: ExecutionException) {
+                e.printStackTrace()
+                false
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+                false
+            }
         }
     }
 }

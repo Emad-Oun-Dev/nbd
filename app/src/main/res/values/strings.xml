@@ -7,8 +7,8 @@
     <string name="removed_user_successfully">User removed successfully</string>
     <string name="delete_user">Are you want to delete user ?</string>
     <string name="yes">Yes</string>
-    <string name="name_txt">Name: </string>
-    <string name="email_txt">Email: </string>
+    <string name="name_txt">Title: </string>
+    <string name="time_txt">Time: </string>
     <string name="try_again_txt">Try again </string>
     <string name="name_error_txt">Please enter your name</string>
     <string name="email_error_txt">Please enter valid email</string>
@@ -17,4 +17,12 @@
     <string name="channel_description">reminder_reminder</string>
     <string name="alert_details">Alert Details Screen</string>
     <string name="cancel_notification">Cancel Notification</string>
+    <string name="wave_line_test_txt">WaveLine Test</string>
+    <string name="schedule_this_notification_txt">Schedule this notification</string>
+    <string name="schedule_notification_txt">Schedule Notification</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirmation_msg">Are You sure Cancelling Event</string>
+    <string name="ok">Ok\n</string>
+    <string name="worker_canceled_successfully">Task Canceled Successfully</string>
+    <string name="cancel_all">Cancel All\n</string>
 </resources>

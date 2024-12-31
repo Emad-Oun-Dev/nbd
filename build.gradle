@@ -3,7 +3,7 @@ buildscript {
         //  compose_version = '1.1.0-beta01'
         kotlin_version = "1.6.0"
         compose_version = "1.4.0"
-        lifeCycleversion = "2.5.1"
+        lifeCycleversion = "2.7.0"
         composeLifeCycleversion = "2.5.3"
         coreVersion = "1.7.1"
         daggerVersion = '2.44.2'
@@ -19,6 +19,7 @@ buildscript {
         loggingInterceptorVersion = "3.1.0"
         logging_interceptor_version = "3.1.0"
         work_version = "2.10.0"
+       accompanist_version = "0.28.0"
     }
 }
 
