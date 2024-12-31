@@ -55,8 +55,6 @@ Fapp/src/main/java/com/example/nbdtask/data/di/LocalAlertsDataModule.kt,a\7\a77
 _app/src/main/java/com/example/nbdtask/presentation/features/localAlerts/LocalAlertsViewModel.kt,7\d\7d7161248993a6ef5bdfa657431ce3d62a23471f
 ‹
 [app/src/main/java/com/example/nbdtask/presentation/features/localAlerts/LocalAlertsEvent.kt,d\e\de1cebf612a75653823fdb249a64c331c8eb8cef
-‰
-Yapp/src/main/java/com/example/nbdtask/presentation/features/localAlerts/ReminderWorker.kt,4\6\467349c74f1c161d0a715de4b1b03a4032f18cae
 ”
 dapp/src/main/java/com/example/nbdtask/presentation/features/alertDetails/LocalAlertsdetailsScreen.kt,5\a\5a1f25cbc3029fff1d652913bba453f2097e5aa0
 ”

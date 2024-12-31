@@ -24,5 +24,5 @@
     <string name="confirmation_msg">Are You sure Cancelling Event</string>
     <string name="ok">Ok\n</string>
     <string name="worker_canceled_successfully">Task Canceled Successfully</string>
-    <string name="cancel_all">Cancel All\n</string>
+    <string name="cancel_all">Cancel All</string>
 </resources>
